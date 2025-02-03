@@ -1,3 +1,5 @@
+package org.example;
+
 import java.awt.*;
 
 public class SnakeBlock extends Block {
@@ -17,7 +19,7 @@ public class SnakeBlock extends Block {
 
     @Override
     public void draw(Graphics g) {
-        g.setColor(this.isDead ? Color.RED : Color.GREEN);
+        g.setColor(this.isDead ? Color.RED : Color.MAGENTA);
         g.fillRect(x*10,y*10,10,10);
     }
 }

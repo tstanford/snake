@@ -1,3 +1,5 @@
+package org.example;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -14,14 +16,19 @@ public class Canvas extends JPanel implements Runnable, KeyListener {
     private Thread thread;
     private SnakeBlock head;
     private java.util.List<SnakeBlock> tail;
+    private java.util.List<Apple> apples;
+    private java.util.List<Block> wall;
     private boolean isRunning = false;
     private Direction direction;
-    private int ticks = 0;
-    private Apple apple;
+    private int ticks;
     private Random random;
-    private int score = 0;
-    private int snakeSize = 20;
+    private int score;
+    private int snakeSize;
     private boolean hasDied = false;
+    private int numberOfApples;
+    private Block[][] currentLevel;
+    private Levels levels;
+    private int currentLevelIndex = 0;
 
     public Canvas()
     {
@@ -31,27 +38,39 @@ public class Canvas extends JPanel implements Runnable, KeyListener {
         this.setMaximumSize(new Dimension(WIDTH,HEIGHT));
         this.setPreferredSize(new Dimension(WIDTH,HEIGHT));
 
+        levels = new Levels(WIDTH,HEIGHT);
         start();
     }
 
     private void newGame(){
+        currentLevelIndex = 0;
+        direction = Direction.RIGHT;
+        numberOfApples = 1;
+        ticks=0;
         hasDied = false;
         snakeSize = 20;
         score = 0;
         random = new Random();
         tail = new ArrayList<>();
+        apples = new ArrayList<>();
+        currentLevel = levels.reset();
 
         head = new SnakeBlock();
         head.setY(10);
         head.setX(10);
 
-        apple = new Apple();
-        randomlyPlaceApple();
+        for(int i=0;i<numberOfApples;i++) {
+            Apple apple = new Apple();
+            apples.add(apple);
+            randomlyPlaceApple(apple);
+        }
     }
 
-    private void randomlyPlaceApple(){
-        apple.setY(random.nextInt(HEIGHT/10-1));
-        apple.setX(random.nextInt(WIDTH/10-1));
+    private void randomlyPlaceApple(Apple apple){
+        do {
+            apple.setY(random.nextInt(HEIGHT / 10 - 1));
+            apple.setX(random.nextInt(WIDTH / 10 - 1));
+        } while(appleIncorrectlyPlaced(apple));
     }
 
     public void start(){
@@ -59,6 +78,29 @@ public class Canvas extends JPanel implements Runnable, KeyListener {
         thread = new Thread(this);
         thread.start();
         direction = Direction.DOWN;
+    }
+
+    public boolean appleIncorrectlyPlaced(Apple apple){
+
+        int x = apple.getX();
+        int y = apple.getY();
+
+        if(apple.collidesWith(head)) {
+            return true;
+        }
+
+        if(currentLevel[y][x] != null) {
+            if (apple.collidesWith(currentLevel[y][x]))
+                return true;
+        }
+
+        for(int i=0; i< tail.size(); i++) {
+            if(apple.collidesWith(tail.get(i))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void stop(){
@@ -90,7 +132,7 @@ public class Canvas extends JPanel implements Runnable, KeyListener {
             return;
         }
 
-        if(ticks++ > 50) {
+        if(ticks++ >50) {
             ticks=0;
             if (tail.size() > snakeSize) {
                 tail.remove(tail.size() - 1);
@@ -107,10 +149,36 @@ public class Canvas extends JPanel implements Runnable, KeyListener {
             else if (direction == Direction.RIGHT)
                 head.setX(head.getX() + 1);
 
-            if(head.collidesWith(apple)) {
-                score++;
-                randomlyPlaceApple();
-                snakeSize+=5;
+            for(var apple : apples) {
+                if (head.collidesWith(apple)) {
+                    score++;
+                    randomlyPlaceApple(apple);
+                    snakeSize += 2;
+                    if(score%2 == 0) {
+                        currentLevel = levels.nextLevel();
+                        head.setY(10);
+                        head.setX(10);
+                        direction = Direction.DOWN;
+                        tail.clear();
+                        for(var a : apples) {
+                            randomlyPlaceApple(a);
+                        }
+                    }
+                }
+            }
+
+            int headX = head.getX();
+            if(headX<0) headX=0;
+            if(headX>WIDTH-1) headX=WIDTH-1;
+            int headY = head.getY();
+            if(headY<0) headY=0;
+            if(headY>HEIGHT-1) headX=HEIGHT-1;
+
+            if(currentLevel[headY][headX] != null) {
+                if(head.collidesWith(currentLevel[headY][headX])) {
+                    hasDied = true;
+                    return;
+                }
             }
 
             for(SnakeBlock snakeBlock : tail) {
@@ -140,10 +208,21 @@ public class Canvas extends JPanel implements Runnable, KeyListener {
         g.setColor(Color.BLACK);
         g.fillRect(0,0,WIDTH,HEIGHT);
 
-        apple.draw(g);
         head.draw(g);
 
         try {
+            for(int wallY = 0;wallY < currentLevel.length; wallY++){
+                for(int wallX = 0;wallX < currentLevel[wallY].length; wallX++){
+                    if(currentLevel[wallY][wallX] != null){
+                        currentLevel[wallY][wallX].draw(g);
+                    }
+                }
+            }
+
+            for(var apple : apples) {
+                apple.draw(g);
+            }
+
             for (var block : tail) {
                 block.draw(g);
             }
