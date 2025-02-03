@@ -5,15 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e3aa6eb9-ae44-431b-9f82-16b98f86cc07" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Apple.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Block.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Canvas.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Direction.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Levels.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Program.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnakeBlock.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TreeBlock.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WallBlock.java" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/img.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/Canvas.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/example/Canvas.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
