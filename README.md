@@ -2,7 +2,7 @@
 
 ## Summary
 A simple snake game I wrote as a swing app in 2019 as a personal project when new to Java. I previously had a C#
-background of around 15 years. 
+background of around 15 years. The game has been tested on both a linux and a windows desktop. 
 
 ## Limitations:
 * No sound
