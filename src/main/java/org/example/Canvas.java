@@ -154,7 +154,7 @@ public class Canvas extends JPanel implements Runnable, KeyListener {
                     score++;
                     randomlyPlaceApple(apple);
                     snakeSize += 2;
-                    if(score%2 == 0) {
+                    if(score%10 == 0) {
                         currentLevel = levels.nextLevel();
                         head.setY(10);
                         head.setX(10);
